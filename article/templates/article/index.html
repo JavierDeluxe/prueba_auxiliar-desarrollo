@@ -20,15 +20,15 @@
                     <a class="nav-link active" aria-current="page" href="#">Inicio</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Registrar articulo</a>
+                    <a class="nav-link" href="{% url 'article:crear_articulo' %}">Registrar articulo</a>
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Sesión
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Ingresar</a></li>
-                      <li><a class="dropdown-item" href="#">Registrarse</a></li>
+                      <li><a class="dropdown-item" href="{% url 'article:iniciar_sesion' %}">Ingresar</a></li>
+                      <li><a class="dropdown-item" href="{% url 'article:registro' %}">Registrarse</a></li>
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="#">Salir</a></li>
                     </ul>
@@ -56,7 +56,7 @@
                     <li class="list-group-item">Date published:</li>
                     <li class="list-group-item">Hearts: </li>
                 </ul>
-                <a href="#" class="btn btn-primary">Ver</a>
+                <a href="{% url 'article:ver_articulo' %}" class="btn btn-primary">Ver</a>
                 </div>
               </div>
           </div>

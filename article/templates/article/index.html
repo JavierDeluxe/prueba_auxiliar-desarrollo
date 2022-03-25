@@ -27,10 +27,14 @@
                       Sesión
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="{% url 'article:iniciar_sesion' %}">Ingresar</a></li>
-                      <li><a class="dropdown-item" href="{% url 'article:registro' %}">Registrarse</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="#">Salir</a></li>
+                      {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'article:cerrar_sesion' %}">Cerrar sesion</a></li>
+                      {% else %}
+                        <li><a class="dropdown-item" href="{% url 'article:iniciar_sesion' %}">Ingresar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'article:registro' %}">Registrarse</a></li>
+                       
+                      {% endif%}
                     </ul>
                 </ul>
                 <form class="d-flex">

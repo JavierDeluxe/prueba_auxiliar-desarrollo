@@ -1,16 +1,26 @@
+from pyexpat.errors import messages
 from unicodedata import name
-from django.shortcuts import render
-from .models import User,Article,Comment,Commemt_second_level
-
+from django.shortcuts import redirect, render
+from .models import *
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .forms import AutheticateForm, RegistroForm
 
 def index(request):
     return render(request, "article/index.html",{})
 
 def registro(request):
-    return render(request, "article/registro.html",{})
+    form = RegistroForm()
+    return render(request, "article/registro.html",{"form":form})
 
 def iniciar_sesion(request):
-    return render(request, "article/iniciar_sesion.html",{})
+    form = AutheticateForm()
+    return render(request, "article/iniciar_sesion.html",{"form":form})
+
+def cerrar_sesion(request):
+    logout(request)
+    messages.info(request, "Saliste de la pagina")
+    return redirect("article/index.html")
 
 def ver_articulo(request):
     return render(request, "article/ver_articulo.html", {})

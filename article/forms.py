@@ -1,16 +1,16 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
-from .models import Usuario
+from django.forms import CharField
+from django.contrib.auth.models import User
+
 
 class RegistroForm(UserCreationForm):
-    password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Confirmar contraseña", widget=forms.PasswordInput)
-
+  
     class Meta():
-        model = Usuario
-        fields = ("username", "email", "password1","password2","photo")
-        labels = {"username":"Nombre completo", "email": "Correo","password1":"Ingresa la contraseña","password2":"Confirmar contraseña","photo":"Cargue foto"}
+        model = User
+        fields = ("username", "email", "password1","password2")
+        labels = {"username":"Nombre completo", "email": "Correo","password1":"Ingrese contraseña","password2":"Confirme contraseña"}
 
 class AutheticateForm(forms.ModelForm):
 

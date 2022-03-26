@@ -1,3 +1,4 @@
+from cmath import phase
 from pyexpat.errors import messages
 from unicodedata import name
 from django.shortcuts import redirect, render
@@ -10,17 +11,37 @@ def index(request):
     return render(request, "article/index.html",{})
 
 def registro(request):
-    form = RegistroForm()
-    return render(request, "article/registro.html",{"form":form})
+    data = {
+        'form' : RegistroForm()
+    }
+    print("paso 1")
+    if request.method == 'POST':
+        print("paso 2")
+        formulario = RegistroForm(request.POST)
+        if formulario.is_valid():
+            user_save = formulario.save()
+            username1 = formulario.cleaned_data["username"]
+            password1 = formulario.cleaned_data["password1"]
+            user = UserProfile(user=user_save, photo=request.POST.get('photo'))
+            user.save()
+            user = authenticate(username=username1, password=password1)
+            login(request, user)
+            return redirect(request, "article/index.html")
+        data['form'] = formulario
+
+    return render(request, "article/registro.html",data)
 
 def iniciar_sesion(request):
-    form = AutheticateForm()
-    return render(request, "article/iniciar_sesion.html",{"form":form})
+    if request.method == 'POST':
+        username1 = request.POST.get['username']
+        password1 = request.POST.get['password']
+        usuario = authenticate(username=username1, password = password1)
+        login(usuario,password1)
+    return render(request, "article/iniciar_sesion.html")
 
 def cerrar_sesion(request):
     logout(request)
-    messages.info(request, "Saliste de la pagina")
-    return redirect("article/index.html")
+    return render("index.html")
 
 def ver_articulo(request):
     return render(request, "article/ver_articulo.html", {})
@@ -29,10 +50,14 @@ def crear_articulo(request):
     return render(request, "article/crear_articulo.html",{})
 
 def registro_exitoso(request):
-        name_post = request.POST['name']
-        password_post = request.POST['password']
-        email_post = request.POST['correo']
-        image_post = request.POST.get('imagen',False)
-        nuevo_objeto = User(name=name_post, photo=image_post, email=email_post,password=password_post)
-        nuevo_objeto.save()
-        return render(request, "article/registro_exitoso.html",{"name":name_post,"password":password_post,"correo":email_post,"image":image_post})
+    print("paso 3")
+    #print(request)
+    #data = request.POST["form"]
+    #name_post = "hi"
+    #password_post = r"2"
+    #email_post = "3"
+    #image_post = "5"
+    #nuevo_objeto = Usuario(username=name_post, photo=image_post, email=email_post,password=password_post)
+    #nuevo_objeto.save()
+    #return render(request, "article/registro_exitoso.html",{"name":name_post,"password":password_post,"correo":email_post,"image":image_post})
+    return render(request, "article/registro_exitoso.html",{})

@@ -4,11 +4,12 @@ from unicodedata import name
 from django.shortcuts import redirect, render
 from .models import *
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .forms import AutheticateForm, RegistroForm
+from .forms import RegistroForm
+from datetime import datetime
 
 def index(request):
-    return render(request, "article/index.html",{})
+    articulos = Article.objects.all()
+    return render(request, "article/index.html",{"articles":articulos})
 
 def registro(request):
     data = {
@@ -26,27 +27,41 @@ def registro(request):
             user.save()
             user = authenticate(username=username1, password=password1)
             login(request, user)
-            return redirect(request, "article/index.html")
+            return redirect("/")
         data['form'] = formulario
 
     return render(request, "article/registro.html",data)
 
 def iniciar_sesion(request):
     if request.method == 'POST':
-        username1 = request.POST.get['username']
-        password1 = request.POST.get['password']
+        username1 = request.POST.get('username')
+        password1 = request.POST.get('password')
         usuario = authenticate(username=username1, password = password1)
-        login(usuario,password1)
+        if usuario is not None:
+            login(request, usuario)
+            return redirect("/")
+        
     return render(request, "article/iniciar_sesion.html")
 
 def cerrar_sesion(request):
     logout(request)
-    return render("index.html")
+    return render(request, "article/index.html")
 
 def ver_articulo(request):
     return render(request, "article/ver_articulo.html", {})
 
 def crear_articulo(request):
+    id_usuario = request.session['_auth_user_id']
+    if request.method == 'POST':
+        titulo = request.POST.get("titulo")
+        texto = request.POST.get('texto')
+        foto = request.POST.get('foto')
+        author = UserProfile.objects.get(user_id=id_usuario)
+        date = datetime.now()
+        art = Article(titulo,author,texto,foto,0,
+                        date)
+        print(art)
+        #art.save()
     return render(request, "article/crear_articulo.html",{})
 
 def registro_exitoso(request):

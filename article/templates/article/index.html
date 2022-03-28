@@ -24,7 +24,11 @@
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Sesión
+                      {% if user.is_authenticated %}
+                        {{ user.get_username }} 
+                      {% else %}
+                        Sesión 
+                      {% endif %}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                       {% if user.is_authenticated %}
@@ -33,7 +37,6 @@
                         <li><a class="dropdown-item" href="{% url 'article:iniciar_sesion' %}">Ingresar</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'article:registro' %}">Registrarse</a></li>
-                       
                       {% endif%}
                     </ul>
                 </ul>
@@ -49,21 +52,23 @@
     <br> <br>
 
     <main>
+      {% for article in articulos %}
         <div class="container">
             <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="..." alt="Card image cap">
+                <img class="card-img-top" src="{{ article.image }}" alt="Card image cap">
                 <div class="card-body">
-                  <h5 class="card-title">Titulo</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <h5 class="card-title">{{ article.title }}</h5>
+                  <p class="card-text">{{ article.text }}</p>
                   <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Author:</li>
-                    <li class="list-group-item">Date published:</li>
-                    <li class="list-group-item">Hearts: </li>
+                    <li class="list-group-item">Author:{{ article.author_fk.user.username }}</li>
+                    <li class="list-group-item">Date published:{{article.date}}</li>
+                    <li class="list-group-item">Hearts: {{ article.hearts }}</li>
                 </ul>
-                <a href="{% url 'article:ver_articulo' %}" class="btn btn-primary">Ver</a>
+                <a href="{% url 'article:ver_articulo' article.id %}" class="btn btn-primary">Ver</a>
                 </div>
               </div>
           </div>
+          {% endfor %}
     </main>
 
 

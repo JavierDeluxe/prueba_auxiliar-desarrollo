@@ -15,9 +15,7 @@ def registro(request):
     data = {
         'form' : RegistroForm()
     }
-    print("paso 1")
     if request.method == 'POST':
-        print("paso 2")
         formulario = RegistroForm(request.POST)
         if formulario.is_valid():
             user_save = formulario.save()
@@ -45,10 +43,23 @@ def iniciar_sesion(request):
 
 def cerrar_sesion(request):
     logout(request)
-    return render(request, "article/index.html")
+    return redirect("/")
 
-def ver_articulo(request):
-    return render(request, "article/ver_articulo.html", {})
+def ver_articulo(request, id):
+    articulo = Article.objects.get(pk=id)
+    comentarios = articulo.comments_fk
+    if request.method == 'POST':
+        author = articulo.author_fk
+        texto = request.POST.get('texto')
+        comentario = Comment(author_fk=author,text =texto)
+        comentario.save()
+        print(articulo.comments_fk)
+        if(articulo.comments_fk is None):
+            comentarios.add(comentario)
+        redirect("article/ver_articulo.html",{"articulo":articulo})
+    return render(request, "article/ver_articulo.html", {"articulo":articulo})
+
+
 
 def crear_articulo(request):
     id_usuario = request.session['_auth_user_id']
@@ -57,22 +68,11 @@ def crear_articulo(request):
         texto = request.POST.get('texto')
         foto = request.POST.get('foto')
         author = UserProfile.objects.get(user_id=id_usuario)
-        date = datetime.now()
-        art = Article(titulo,author,texto,foto,0,
-                        date)
-        print(art)
-        #art.save()
+        fecha = datetime.now()
+        art = Article(title=titulo,author_fk=author,text=texto,image=foto,hearts=0,date=fecha)
+        art.save()
+        return redirect("/")
     return render(request, "article/crear_articulo.html",{})
 
 def registro_exitoso(request):
-    print("paso 3")
-    #print(request)
-    #data = request.POST["form"]
-    #name_post = "hi"
-    #password_post = r"2"
-    #email_post = "3"
-    #image_post = "5"
-    #nuevo_objeto = Usuario(username=name_post, photo=image_post, email=email_post,password=password_post)
-    #nuevo_objeto.save()
-    #return render(request, "article/registro_exitoso.html",{"name":name_post,"password":password_post,"correo":email_post,"image":image_post})
     return render(request, "article/registro_exitoso.html",{})

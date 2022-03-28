@@ -12,6 +12,7 @@ urlpatterns = [
     path("<int:id>/ver_articulo/", views.ver_articulo, name="ver_articulo"),
     path("crear_articulo/", views.crear_articulo, name="crear_articulo"),
     path("registro_exitoso", views.registro_exitoso, name="registro_exitoso"),
+    path("<int:id>", views.dar_heart, name="dar_heart"),
 ]
 
 

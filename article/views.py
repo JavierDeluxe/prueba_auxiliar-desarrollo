@@ -1,7 +1,7 @@
 from cmath import phase
 from pyexpat.errors import messages
 from unicodedata import name
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from .models import *
 from django.contrib.auth import login, logout, authenticate
 from .forms import RegistroForm
@@ -47,17 +47,14 @@ def cerrar_sesion(request):
 
 def ver_articulo(request, id):
     articulo = Article.objects.get(pk=id)
-    comentarios = articulo.comments_fk
+    comentarios = Comment.objects.filter(publicacion_fk_id=id)
     if request.method == 'POST':
         author = articulo.author_fk
         texto = request.POST.get('texto')
-        comentario = Comment(author_fk=author,text =texto)
+        comentario = Comment(author_fk=author,text =texto,publicacion_fk=articulo)
         comentario.save()
-        print(articulo.comments_fk)
-        if(articulo.comments_fk is None):
-            comentarios.add(comentario)
         redirect("article/ver_articulo.html",{"articulo":articulo})
-    return render(request, "article/ver_articulo.html", {"articulo":articulo})
+    return render(request, "article/ver_articulo.html", {"articulo":articulo,"comentarios":comentarios})
 
 
 
@@ -69,10 +66,22 @@ def crear_articulo(request):
         foto = request.POST.get('foto')
         author = UserProfile.objects.get(user_id=id_usuario)
         fecha = datetime.now()
-        art = Article(title=titulo,author_fk=author,text=texto,image=foto,hearts=0,date=fecha)
+        art = Article(title=titulo,author_fk=author,text=texto,image=foto,date=fecha)
         art.save()
+        comment = Comment(author_fk=author, text="Comentario necesario",publicacion_fk=art)
+        comment.save()
+        second_comment = Comment_second_level(author_fk=author, text="Comentario necesario",comentario_fk=comment)
+        second_comment.save()
         return redirect("/")
     return render(request, "article/crear_articulo.html",{})
 
 def registro_exitoso(request):
     return render(request, "article/registro_exitoso.html",{})
+
+def dar_heart(request, id):
+    user = request.user.id
+    print(user)
+    seleccionado = get_object_or_404(Article, pk=id)
+    seleccionado.hearts = seleccionado.hearts+1
+    seleccionado.save()
+    return redirect("/")

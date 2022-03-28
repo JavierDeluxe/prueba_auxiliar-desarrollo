@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <link
@@ -122,6 +121,11 @@
               href="{% url 'article:ver_articulo' article.id %}"
               class="btn btn-primary"
               >Ver</a
+            >
+            <a
+              href="{% url 'article:dar_heart' article.id %}"
+              class="btn btn-primary"
+              >Heart++</a
             >
           </div>
         </div>

@@ -66,7 +66,7 @@ def crear_articulo(request):
         foto = request.POST.get('foto')
         author = UserProfile.objects.get(user_id=id_usuario)
         fecha = datetime.now()
-        art = Article(title=titulo,author_fk=author,text=texto,image=foto,date=fecha)
+        art = Article(title=titulo,author_fk=author,text=texto,image=foto,date=fecha,hearts=0)
         art.save()
         comment = Comment(author_fk=author, text="Comentario necesario",publicacion_fk=art)
         comment.save()
